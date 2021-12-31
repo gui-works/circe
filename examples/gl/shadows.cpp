@@ -42,7 +42,7 @@ struct LightObject {
 
 class ShadowsExample : public circe::gl::BaseApp {
 public:
-  ShadowsExample() : BaseApp(800, 800) {
+  ShadowsExample() : BaseApp(800, 800, "Shadows Example") {
     hermes::Path assets_path(std::string(ASSETS_PATH));
     hermes::Path shaders_path(std::string(SHADERS_PATH));
     // setup lights
@@ -54,7 +54,7 @@ public:
     light_box = circe::Shapes::box({{-10, -10, 0}, {10, 10, 30}}, circe::shape_options::wireframe);
     light_model = circe::Shapes::icosphere({}, 0.3, 3);
     ball = circe::Shapes::icosphere({3, 3, 0}, 0.5, 5, circe::shape_options::normal);
-    mesh = circe::gl::SceneModel::fromFile("/home/filipecn/Desktop/teapot.obj", circe::shape_options::normal);
+    mesh = circe::gl::SceneModel::fromFile("/home/filipecn/Desktop/desk/teapot.obj", circe::shape_options::normal);
     floor = circe::Shapes::plane(hermes::Plane::XY(), {}, {20, 0, 0}, 20,
                                  circe::shape_options::normal);
     wall = circe::Shapes::plane(hermes::Plane::YZ(), {}, {0, 20, 0}, 20,
@@ -80,9 +80,9 @@ public:
     ball_mtl.roughness = 0.35;
     // setup shader program
     if (!light_model.program.link(shaders_path, "color"))
-      hermes::Log::error("Failed to load model shader: " + light_model.program.err);
+      HERMES_LOG_ERROR("Failed to load model shader: " + light_model.program.err);
     if (!program.link(shaders_path, "pbr"))
-      hermes::Log::error("Failed to load model shader: " + program.err);
+      HERMES_LOG_ERROR("Failed to load model shader: " + program.err);
     // setup UBO
     ubo.push(program);
     program.setUniformBlockBinding("PBR", 0);
@@ -115,8 +115,8 @@ public:
     };
   }
 
-  void prepareFrame(const circe::gl::ViewportDisplay &display) override {
-    circe::gl::BaseApp::prepareFrame(display);
+  void prepareFrame() override {
+    circe::gl::BaseApp::prepareFrame();
     ImGuizmo::BeginFrame();
     glDisable(GL_CULL_FACE);
 //    glEnable(GL_CULL_FACE);
